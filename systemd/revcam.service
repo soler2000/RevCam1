@@ -1,0 +1,14 @@
+[Unit]
+Description=RevCam1 WebRTC Camera
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/RevCam1
+Environment="PYTHONUNBUFFERED=1"
+ExecStart=/home/pi/RevCam1/.venv/bin/python -m server.app
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

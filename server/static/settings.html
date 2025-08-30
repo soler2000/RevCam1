@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>RevCam1 Settings</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header>
+    <h1>RevCam1 Settings</h1>
+    <nav>
+      <a href="/">Viewer</a>
+      <a href="/settings">Settings</a>
+    </nav>
+  </header>
+  <main>
+    <form id="form" class="panel">
+      <fieldset>
+        <legend>Video</legend>
+        <label>Width <input type="number" id="width" min="160" step="2" /></label>
+        <label>Height <input type="number" id="height" min="120" step="2" /></label>
+        <label>FPS <input type="number" id="fps" min="1" max="60" /></label>
+        <label>Bitrate (bps) <input type="number" id="bitrate" min="100000" step="10000" /></label>
+        <label>Flip
+          <select id="flip">
+            <option value="none">none</option>
+            <option value="horizontal">horizontal</option>
+            <option value="vertical">vertical</option>
+          </select>
+        </label>
+      </fieldset>
+      <fieldset>
+        <legend>WebRTC</legend>
+        <label>STUN servers (comma) <input type="text" id="stun" placeholder="stun:stun.l.google.com:19302" /></label>
+        <label>TURN URL <input type="text" id="turn" placeholder="turn:example.com:3478?transport=udp" /></label>
+        <label>TURN Username <input type="text" id="turn_user" /></label>
+        <label>TURN Password <input type="password" id="turn_pass" /></label>
+      </fieldset>
+      <fieldset>
+        <legend>Server</legend>
+        <label>Host <input type="text" id="host" /></label>
+        <label>Port <input type="number" id="port" min="1" max="65535" /></label>
+      </fieldset>
+      <div class="actions">
+        <button type="submit">Save</button>
+        <span id="status"></span>
+      </div>
+    </form>
+  </main>
+  <script src="/static/settings.js"></script>
+</body>
+</html>
