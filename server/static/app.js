@@ -1,58 +1,57 @@
-(async function(){
+(() => {
   const statusEl = document.getElementById('status');
-  const btn = document.getElementById('connectBtn');
-  const video = document.getElementById('video');
-  let pc, ws;
+  const video = document.getElementById('v');
+  const playBtn = document.getElementById('play');
+  const log = (...a) => {
+    const line = a.map(x => (typeof x === 'string' ? x : JSON.stringify(x))).join(' ');
+    console.log('[viewer]', ...a);
+    statusEl.textContent = (statusEl.textContent + '\n' + line).trim().slice(-3000);
+  };
 
-  function setStatus(s){ statusEl.textContent = s; }
+  video.muted = true; video.playsInline = true; video.autoplay = true; video.controls = true;
+  ['loadedmetadata','loadeddata','canplay','play','playing','pause','waiting','stalled','emptied','error','suspend','timeupdate'].forEach(ev => {
+    video.addEventListener(ev, () => log('video event:', ev, 't=', video.currentTime.toFixed(2)));
+  });
+  playBtn.onclick = async () => { try { await video.play(); log('manual play() OK'); } catch (e) { log('manual play() failed:', e?.message || e); } };
 
-  async function fetchConfig(){
-    const r = await fetch('/api/config');
-    return r.json();
-  }
-
-  async function connect(){
-    if (pc) return;
-    const cfg = await fetchConfig();
-
+  (async () => {
+    const cfg = await fetch('/api/config').then(r => r.json()).catch(() => ({}));
     const iceServers = [];
-    if (cfg.webrtc?.stun_servers?.length) iceServers.push(...cfg.webrtc.stun_servers.map(s=>({urls:s})));
-    if (cfg.webrtc?.turn){
-      const t = cfg.webrtc;
-      const entry = {urls: t.turn};
-      if (t.turn_username && t.turn_password){ entry.username=t.turn_username; entry.credential=t.turn_password; }
-      iceServers.push(entry);
-    }
+    if (cfg.webrtc?.stun_servers?.length) iceServers.push({ urls: cfg.webrtc.stun_servers });
+    if (cfg.webrtc?.turn) iceServers.push({ urls: cfg.webrtc.turn, username: cfg.webrtc.turn_username || undefined, credential: cfg.webrtc.turn_password || undefined });
 
-    pc = new RTCPeerConnection({iceServers});
-    pc.addTransceiver('video', {direction:'recvonly'});
-    pc.oniceconnectionstatechange = () => setStatus(`pc: ${pc.iceConnectionState}`);
-    pc.ontrack = (ev) => { video.srcObject = ev.streams[0]; };
+    const pc = new RTCPeerConnection({ iceServers });
 
-    ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws');
-    ws.onopen = async () => {
-      setStatus('signaling open');
-      const offer = await pc.createOffer();
-      await pc.setLocalDescription(offer);
-      ws.send(JSON.stringify({type:'offer', sdp: offer.sdp}));
+    pc.oniceconnectionstatechange = () => log('ice:', pc.iceConnectionState);
+    pc.onconnectionstatechange = () => log('conn:', pc.connectionState);
+
+    pc.ontrack = async (ev) => {
+      log('ontrack track kind=', ev.track?.kind, 'readyState=', ev.track?.readyState);
+      const ms = new MediaStream([ev.track]);
+      video.srcObject = ms;
+      try { await video.play(); log('video.play() OK'); } catch (e) { log('video.play() blocked:', e?.message || e); }
     };
-    ws.onmessage = async (ev) => {
-      const data = JSON.parse(ev.data);
-      if (data.type === 'answer'){
-        await pc.setRemoteDescription({type:'answer', sdp:data.sdp});
-        setStatus('connected');
-      } else if (data.type === 'ice'){
-        try { await pc.addIceCandidate({candidate:data.candidate, sdpMLineIndex:data.sdpMLineIndex}); } catch {}
+
+    const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+    const ws = new WebSocket(`${proto}://${location.host}/ws`);
+
+    ws.onmessage = async (msg) => {
+      const data = JSON.parse(msg.data);
+      if (data.type === 'offer') {
+        // Server is the offerer
+        await pc.setRemoteDescription({ type: 'offer', sdp: data.sdp });
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        ws.send(JSON.stringify({ type: 'answer', sdp: answer.sdp }));
+        log('answer sent');
+      } else if (data.type === 'ice') {
+        try { await pc.addIceCandidate({ candidate: data.candidate, sdpMLineIndex: data.sdpMLineIndex }); }
+        catch (e) { log('addIce error', e?.message || e); }
       }
     };
-    ws.onerror = () => setStatus('ws error');
-    ws.onclose = () => setStatus('ws closed');
 
-    pc.onicecandidate = ({candidate}) => {
-      if (candidate) ws.send(JSON.stringify({type:'ice', candidate:candidate.candidate, sdpMLineIndex:candidate.sdpMLineIndex || 0}));
-    };
-  }
-
-  btn.addEventListener('click', connect);
-  connect().catch(e=>setStatus('error: '+e.message));
+    ws.onerror = (e) => log('ws error', e?.message || e);
+    ws.onclose = () => log('ws closed');
+    window._pc = pc;
+  })();
 })();

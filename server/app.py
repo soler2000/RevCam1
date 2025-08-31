@@ -1,15 +1,8 @@
 import asyncio
 import json
 import logging
-import threading
 from pathlib import Path
-from typing import Dict, Any
-
-from aiohttp import web
-
-import gi
-gi.require_version('Gst', '1.0')
-from gi.repository import Gst, GLib
+from aiohttp import web, WSMsgType
 
 from .config import load_config, save_config, config_to_public_json
 from .webrtc_gst import WebRTCBroadcaster
@@ -20,100 +13,106 @@ LOG = logging.getLogger("app")
 ROOT = Path(__file__).resolve().parent.parent
 STATIC_DIR = ROOT / "server" / "static"
 
-# Start GLib mainloop for GStreamer (background thread)
-Gst.init(None)
-_glib_loop = GLib.MainLoop()
-threading.Thread(target=_glib_loop.run, daemon=True).start()
+# Track active broadcasters for live tweaks
+_ACTIVE = set()
 
-# One viewer at a time (good for Zero 2W)
-STATE: Dict[str, Any] = {"broadcaster": None}
+async def index(request: web.Request) -> web.StreamResponse:
+    return web.FileResponse(STATIC_DIR / "index.html")
 
-async def index(_req): return web.FileResponse(STATIC_DIR / "index.html")
-async def settings_page(_req): return web.FileResponse(STATIC_DIR / "settings.html")
+async def settings_page(request: web.Request) -> web.StreamResponse:
+    return web.FileResponse(STATIC_DIR / "settings.html")
 
-async def get_config(_req):
-  cfg = load_config()
-  return web.json_response(config_to_public_json(cfg))
+async def get_config(request: web.Request) -> web.StreamResponse:
+    return web.json_response(config_to_public_json(load_config()))
 
-async def post_config(req):
-  incoming = await req.json()
-  cfg = load_config()
+async def post_config(request: web.Request) -> web.StreamResponse:
+    try:
+        body = await request.json()
+    except Exception:
+        return web.json_response({"ok": False, "error": "invalid json"}, status=400)
 
-  v = incoming.get("video", {}) or {}
-  w = incoming.get("webrtc", {}) or {}
-  s = incoming.get("server", {}) or {}
+    cfg = load_config()
+    v_in = body.get("video") or {}
+    changed = {}
 
-  if v:
-    cfg.video.width = int(v.get("width", cfg.video.width))
-    cfg.video.height = int(v.get("height", cfg.video.height))
-    cfg.video.fps = int(v.get("fps", cfg.video.fps))
-    cfg.video.bitrate = int(v.get("bitrate", cfg.video.bitrate))
-    if v.get("flip") in ("none","horizontal","vertical"):
-      cfg.video.flip = v["flip"]
-  if w:
-    if isinstance(w.get("stun_servers"), list):
-      cfg.webrtc.stun_servers = [str(x) for x in w["stun_servers"]]
-    cfg.webrtc.turn = str(w.get("turn", cfg.webrtc.turn))
-    cfg.webrtc.turn_username = str(w.get("turn_username", cfg.webrtc.turn_username))
-    cfg.webrtc.turn_password = str(w.get("turn_password", cfg.webrtc.turn_password))
-  if s:
-    cfg.server.host = str(s.get("host", cfg.server.host))
-    cfg.server.port = int(s.get("port", cfg.server.port))
+    # Live-applicable
+    if "mirror" in v_in:
+        cfg.video.mirror = str(v_in["mirror"])
+        changed["mirror"] = cfg.video.mirror
+    if "rotate" in v_in:
+        try: cfg.video.rotate = int(v_in["rotate"])
+        except Exception: cfg.video.rotate = 0
+        if cfg.video.rotate not in (0,90,180,270): cfg.video.rotate = 0
+        changed["rotate"] = cfg.video.rotate
 
-  save_config(cfg)
-  return web.json_response({"ok": True})
+    # Non-live (require reconnect)
+    for k in ("width","height","fps","bitrate"):
+        if k in v_in:
+            setattr(cfg.video, k, int(v_in[k]))
+            changed[k] = getattr(cfg.video, k)
 
-async def ws_handler(req):
-  ws = web.WebSocketResponse(autoping=True)
-  await ws.prepare(req)
+    save_config(cfg)
 
-  cfg = load_config()
+    # Apply live: mirror & rotate
+    applied = {"mirror": 0, "rotate": 0}
+    for bc in list(_ACTIVE):
+        try:
+            if "mirror" in changed and bc.apply_mirror(cfg.video.mirror): applied["mirror"] += 1
+            if "rotate" in changed and bc.apply_rotate(cfg.video.rotate): applied["rotate"] += 1
+        except Exception:
+            pass
 
-  # single-viewer: stop previous if any
-  if STATE["broadcaster"]:
-    try: STATE["broadcaster"].stop()
-    except Exception: pass
-    STATE["broadcaster"] = None
+    return web.json_response({"ok": True, "changed": changed, "live_applied_to": applied, "config": config_to_public_json(cfg)})
 
-  loop = asyncio.get_event_loop()
-  def send_json(payload):
-    asyncio.run_coroutine_threadsafe(ws.send_str(json.dumps(payload)), loop=loop)
+async def ws_handler(request: web.Request) -> web.StreamResponse:
+    ws = web.WebSocketResponse()
+    await ws.prepare(request)
 
-  bc = WebRTCBroadcaster(cfg, send_json)
-  bc.start()
-  STATE["broadcaster"] = bc
-  LOG.info("Viewer connected")
+    cfg = load_config()
+    loop = asyncio.get_running_loop()
 
-  try:
-    async for msg in ws:
-      if msg.type == web.WSMsgType.TEXT:
-        data = json.loads(msg.data)
-        if data.get("type") == "offer":
-          bc.handle_offer(data["sdp"])
-        elif data.get("type") == "ice":
-          bc.add_ice(data["candidate"], int(data.get("sdpMLineIndex", 0)))
-      elif msg.type == web.WSMsgType.ERROR:
-        LOG.warning("WS error: %s", ws.exception())
-  finally:
-    LOG.info("Viewer disconnected")
-    bc.stop()
-    if STATE.get("broadcaster") is bc:
-      STATE["broadcaster"] = None
-    await ws.close()
-  return ws
+    def send_json(payload):
+        try:
+            asyncio.run_coroutine_threadsafe(ws.send_str(json.dumps(payload)), loop)
+        except Exception as e:
+            LOG.warning("send_json scheduling failed: %s", e)
 
-def make_app():
-  app = web.Application()
-  app.add_routes([
-    web.get("/", index),
-    web.get("/settings", settings_page),
-    web.get("/api/config", get_config),
-    web.post("/api/config", post_config),
-    web.get("/ws", ws_handler),
-    web.static("/static", str(STATIC_DIR)),
-  ])
-  return app
+    bc = WebRTCBroadcaster(cfg, send_json)
+    _ACTIVE.add(bc)
+    try:
+        LOG.info("Viewer connected")
+        bc.start()  # server offers SDP
+        async for msg in ws:
+            if msg.type == WSMsgType.TEXT:
+                data = json.loads(msg.data)
+                t = data.get("type")
+                if t == "answer":
+                    bc.handle_answer(data.get("sdp", ""))
+                elif t == "ice":
+                    bc.add_ice(data.get("candidate", ""), int(data.get("sdpMLineIndex", 0)))
+            elif msg.type == WSMsgType.ERROR:
+                LOG.error("WS error: %s", ws.exception())
+    finally:
+        LOG.info("Viewer disconnected")
+        try:
+            if hasattr(bc, "stop"):
+                bc.stop()
+        except Exception as e:
+            LOG.warning("bc.stop failed: %s", e)
+        _ACTIVE.discard(bc)
+        await ws.close()
+    return ws
+
+def make_app() -> web.Application:
+    app = web.Application()
+    app.router.add_get("/", index)
+    app.router.add_get("/settings", settings_page)
+    app.router.add_get("/api/config", get_config)
+    app.router.add_post("/api/config", post_config)
+    app.router.add_static("/static/", path=str(STATIC_DIR), show_index=False)
+    app.router.add_get("/ws", ws_handler)
+    return app
 
 if __name__ == "__main__":
-  cfg = load_config()
-  web.run_app(make_app(), host=cfg.server.host, port=cfg.server.port)
+    cfg = load_config()
+    web.run_app(make_app(), host=cfg.server.host, port=cfg.server.port)

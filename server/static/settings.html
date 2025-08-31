@@ -1,53 +1,95 @@
 <!doctype html>
 <html>
-<head>
-  <meta charset="utf-8" />
-  <title>RevCam1 Settings</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="/static/style.css" />
-</head>
-<body>
-  <header>
-    <h1>RevCam1 Settings</h1>
-    <nav>
-      <a href="/">Viewer</a>
-      <a href="/settings">Settings</a>
-    </nav>
-  </header>
-  <main>
-    <form id="form" class="panel">
-      <fieldset>
-        <legend>Video</legend>
-        <label>Width <input type="number" id="width" min="160" step="2" /></label>
-        <label>Height <input type="number" id="height" min="120" step="2" /></label>
-        <label>FPS <input type="number" id="fps" min="1" max="60" /></label>
-        <label>Bitrate (bps) <input type="number" id="bitrate" min="100000" step="10000" /></label>
-        <label>Flip
-          <select id="flip">
-            <option value="none">none</option>
-            <option value="horizontal">horizontal</option>
-            <option value="vertical">vertical</option>
-          </select>
-        </label>
-      </fieldset>
-      <fieldset>
-        <legend>WebRTC</legend>
-        <label>STUN servers (comma) <input type="text" id="stun" placeholder="stun:stun.l.google.com:19302" /></label>
-        <label>TURN URL <input type="text" id="turn" placeholder="turn:example.com:3478?transport=udp" /></label>
-        <label>TURN Username <input type="text" id="turn_user" /></label>
-        <label>TURN Password <input type="password" id="turn_pass" /></label>
-      </fieldset>
-      <fieldset>
-        <legend>Server</legend>
-        <label>Host <input type="text" id="host" /></label>
-        <label>Port <input type="number" id="port" min="1" max="65535" /></label>
-      </fieldset>
-      <div class="actions">
-        <button type="submit">Save</button>
-        <span id="status"></span>
-      </div>
-    </form>
-  </main>
-  <script src="/static/settings.js"></script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>RevCam1 Settings</title>
+    <style>
+      body{font-family:system-ui,Segoe UI,Arial,sans-serif;background:#111;color:#eee;margin:0}
+      main{max-width:680px;margin:20px auto;padding:16px}
+      label{display:block;margin:10px 0}
+      input,select{width:100%;padding:8px;border:1px solid #444;border-radius:6px;background:#1b1b1b;color:#fff}
+      button{background:#2a2a2a;color:#fff;border:1px solid #444;border-radius:6px;padding:10px 14px;cursor:pointer}
+      button:hover{background:#333}
+      a{color:#9cf;text-decoration:none}
+      pre{background:#0c0c0c;border:1px solid #333;padding:8px;border-radius:6px;white-space:pre-wrap}
+      .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+      @media (max-width:720px){.row{grid-template-columns:1fr}}
+    </style>
+  </head>
+  <body>
+    <main>
+      <h2>RevCam1 Settings</h2>
+      <form id="f">
+        <div class="row">
+          <label>Width <input id="width" type="number" min="160" step="2" required></label>
+          <label>Height <input id="height" type="number" min="120" step="2" required></label>
+        </div>
+        <div class="row">
+          <label>FPS <input id="fps" type="number" min="5" max="60" required></label>
+          <label>Bitrate (bps) <input id="bitrate" type="number" min="50000" step="5000" required></label>
+        </div>
+        <div class="row">
+          <label>Mirror
+            <select id="mirror">
+              <option value="none">none</option>
+              <option value="horizontal">horizontal</option>
+              <option value="vertical">vertical</option>
+            </select>
+          </label>
+          <label>Rotate
+            <select id="rotate">
+              <option value="0">0°</option>
+              <option value="90">90°</option>
+              <option value="180">180°</option>
+              <option value="270">270°</option>
+            </select>
+          </label>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;margin-top:12px">
+          <button type="submit">Save</button>
+          <a href="/">Back to Viewer</a>
+        </div>
+      </form>
+      <h4>Result</h4>
+      <pre id="out"></pre>
+    </main>
+    <script>
+      const $ = id => document.getElementById(id);
+      const out = $('out');
+      async function load() {
+        try {
+          const cfg = await fetch('/api/config').then(r => r.json());
+          $('width').value   = cfg.video?.width ?? 960;
+          $('height').value  = cfg.video?.height ?? 540;
+          $('fps').value     = cfg.video?.fps ?? 25;
+          $('bitrate').value = cfg.video?.bitrate ?? 1200000;
+          $('mirror').value  = cfg.video?.mirror ?? 'none';
+          $('rotate').value  = String(cfg.video?.rotate ?? 0);
+        } catch (e) {
+          out.textContent = 'Failed to load config: ' + (e?.message || e);
+        }
+      }
+      document.getElementById('f').onsubmit = async (e) => {
+        e.preventDefault();
+        const body = {
+          video: {
+            width: parseInt($('width').value, 10),
+            height: parseInt($('height').value, 10),
+            fps: parseInt($('fps').value, 10),
+            bitrate: parseInt($('bitrate').value, 10),
+            mirror: $('mirror').value,
+            rotate: parseInt($('rotate').value, 10)
+          }
+        };
+        try {
+          const res = await fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+          out.textContent = JSON.stringify(await res.json(), null, 2);
+        } catch (e) {
+          out.textContent = 'Save failed: ' + (e?.message || e);
+        }
+      };
+      load();
+    </script>
+  </body>
 </html>
