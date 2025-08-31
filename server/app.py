@@ -16,10 +16,11 @@ from .wifi import (
     connect as wifi_connect,
     nm_debug,
 )
-# optional state helpers (used by detached hotspot start)
+
+# Optional state helpers for detached AP start (safe if missing)
 try:
     from .wifi_state import write_state, read_state
-except Exception:  # fallback if file not present
+except Exception:
     def write_state(status, result=None):  # type: ignore
         pass
     def read_state():  # type: ignore
@@ -157,7 +158,7 @@ async def api_wifi_debug(request: web.Request) -> web.StreamResponse:
     except Exception as e:
         return web.json_response({"ok": False, "error": str(e)}, status=500)
 
-# Detached AP start (so you can reconnect to the new SSID and view the result)
+# Detached AP start helpers (so you can reconnect and read the result)
 async def api_wifi_ap_state(request: web.Request) -> web.StreamResponse:
     try:
         return web.json_response(read_state())
@@ -231,7 +232,7 @@ async def ws_handler(request: web.Request) -> web.StreamResponse:
 wifi_mgr = WifiManager()
 
 async def on_startup(app: web.Application):
-    # Auto-hotspot is DISABLED by default. Enable with REVCAM_AUTOHOTSPOT=1 (optional delay via REVCAM_AUTOHOTSPOT_DELAY).
+    # Auto-hotspot is DISABLED by default. Set REVCAM_AUTOHOTSPOT=1 to enable.
     enabled = str(os.environ.get('REVCAM_AUTOHOTSPOT', '0')).lower() in ('1','true','yes','on')
     if enabled:
         try:
