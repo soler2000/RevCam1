@@ -1,0 +1,195 @@
+=== NetworkManager (this boot, last 300 lines) ===
+Aug 31 14:39:21 motion systemd[1]: Starting NetworkManager.service - Network Manager...
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.1994] NetworkManager (version 1.42.4) is starting... (boot:0286644d-24a9-4054-84b9-e6f273837a4d)
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.1996] Read config: /etc/NetworkManager/NetworkManager.conf (lib: no-mac-addr-change.conf)
+Aug 31 14:39:23 motion systemd[1]: Started NetworkManager.service - Network Manager.
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.2111] bus-manager: acquired D-Bus service "org.freedesktop.NetworkManager"
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.2755] manager[0x55a4e2e000]: monitoring kernel firmware directory '/lib/firmware'.
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.2757] monitoring ifupdown state file '/run/network/ifstate'.
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.2987] hostname: hostname: using hostnamed
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.2988] hostname: static hostname changed from (none) to "motion"
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.3008] dns-mgr: init: dns=default,systemd-resolved rc-manager=symlink (auto)
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.3102] rfkill1: found Wi-Fi radio killswitch (at /sys/devices/platform/soc/3f300000.mmcnr/mmc_host/mmc1/mmc1:0001/mmc1:0001:1/ieee80211/phy0/rfkill1) (driver brcmfmac)
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.3115] manager[0x55a4e2e000]: rfkill: Wi-Fi hardware radio set enabled
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.3116] manager[0x55a4e2e000]: rfkill: WWAN hardware radio set enabled
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.7273] Loaded device plugin: NMAtmManager (/usr/lib/aarch64-linux-gnu/NetworkManager/1.42.4/libnm-device-plugin-adsl.so)
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.8295] Loaded device plugin: NMBluezManager (/usr/lib/aarch64-linux-gnu/NetworkManager/1.42.4/libnm-device-plugin-bluetooth.so)
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.8432] Loaded device plugin: NMWwanFactory (/usr/lib/aarch64-linux-gnu/NetworkManager/1.42.4/libnm-device-plugin-wwan.so)
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.8847] Loaded device plugin: NMWifiFactory (/usr/lib/aarch64-linux-gnu/NetworkManager/1.42.4/libnm-device-plugin-wifi.so)
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.9404] Loaded device plugin: NMTeamFactory (/usr/lib/aarch64-linux-gnu/NetworkManager/1.42.4/libnm-device-plugin-team.so)
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.9439] manager: rfkill: Wi-Fi enabled by radio killswitch; enabled by state file
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.9449] manager: rfkill: WWAN enabled by radio killswitch; enabled by state file
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.9458] manager: Networking is enabled by state file
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.9668] settings: Loaded settings plugin: ifupdown ("/usr/lib/aarch64-linux-gnu/NetworkManager/1.42.4/libnm-settings-plugin-ifupdown.so")
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.9670] settings: Loaded settings plugin: keyfile (internal)
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.9671] ifupdown: management mode: unmanaged
+Aug 31 14:39:23 motion NetworkManager[518]: <info>  [1756647563.9705] ifupdown: interfaces file /etc/network/interfaces doesn't exist
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.0659] dhcp: init: Using DHCP client 'internal'
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.0693] manager: (lo): new Loopback device (/org/freedesktop/NetworkManager/Devices/1)
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.0813] device (lo): state change: unmanaged -> unavailable (reason 'connection-assumed', sys-iface-state: 'external')
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.0855] device (lo): state change: unavailable -> disconnected (reason 'connection-assumed', sys-iface-state: 'external')
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.0910] device (lo): Activation: starting connection 'lo' (4f5195f3-63e7-4ea9-8ff9-fb3f84f9bf80)
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.1009] device (wlan0): driver supports Access Point (AP) mode
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.1092] manager: (wlan0): new 802.11 Wi-Fi device (/org/freedesktop/NetworkManager/Devices/2)
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.1175] device (wlan0): state change: unmanaged -> unavailable (reason 'managed', sys-iface-state: 'external')
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.1552] failed to open /run/network/ifstate
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.1788] device (lo): state change: disconnected -> prepare (reason 'none', sys-iface-state: 'external')
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.1842] device (lo): state change: prepare -> config (reason 'none', sys-iface-state: 'external')
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.1865] device (lo): state change: config -> ip-config (reason 'none', sys-iface-state: 'external')
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.1901] device (lo): state change: ip-config -> ip-check (reason 'none', sys-iface-state: 'external')
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.2326] modem-manager: ModemManager available
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.2427] device (lo): state change: ip-check -> secondaries (reason 'none', sys-iface-state: 'external')
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.2439] device (lo): state change: secondaries -> activated (reason 'none', sys-iface-state: 'external')
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.2518] device (lo): Activation: successful, device activated.
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.4597] device (wlan0): supplicant interface state: internal-starting -> disconnected
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.4601] Wi-Fi P2P device controlled by interface wlan0 created
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.4616] manager: (p2p-dev-wlan0): new 802.11 Wi-Fi P2P device (/org/freedesktop/NetworkManager/Devices/3)
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.4631] device (p2p-dev-wlan0): state change: unmanaged -> unavailable (reason 'managed', sys-iface-state: 'external')
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.4659] device (wlan0): state change: unavailable -> disconnected (reason 'supplicant-available', sys-iface-state: 'managed')
+Aug 31 14:39:24 motion NetworkManager[518]: <info>  [1756647564.4690] device (p2p-dev-wlan0): state change: unavailable -> disconnected (reason 'none', sys-iface-state: 'managed')
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.0794] policy: auto-activating connection 'preconfigured' (ccfe6510-a306-4100-876f-dec2af3b64c5)
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.0816] device (wlan0): Activation: starting connection 'preconfigured' (ccfe6510-a306-4100-876f-dec2af3b64c5)
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.0820] device (wlan0): state change: disconnected -> prepare (reason 'none', sys-iface-state: 'managed')
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.0833] manager: NetworkManager state is now CONNECTING
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.0845] device (wlan0): state change: prepare -> config (reason 'none', sys-iface-state: 'managed')
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.0864] device (wlan0): Activation: (wifi) access point 'preconfigured' has security, but secrets are required.
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.0865] device (wlan0): state change: config -> need-auth (reason 'none', sys-iface-state: 'managed')
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.0922] device (wlan0): state change: need-auth -> prepare (reason 'none', sys-iface-state: 'managed')
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.0945] device (wlan0): state change: prepare -> config (reason 'none', sys-iface-state: 'managed')
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.0958] device (wlan0): Activation: (wifi) connection 'preconfigured' has security, and secrets exist.  No new secrets needed.
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.0960] Config: added 'ssid' value 'thewildes-office'
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.0961] Config: added 'scan_ssid' value '1'
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.0961] Config: added 'bgscan' value 'simple:30:-70:86400'
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.0962] Config: added 'key_mgmt' value 'WPA-PSK WPA-PSK-SHA256 FT-PSK'
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.0962] Config: added 'psk' value '<hidden>'
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.1241] device (wlan0): supplicant interface state: disconnected -> associating
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.1242] device (p2p-dev-wlan0): supplicant management interface state: disconnected -> associating
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.3206] device (wlan0): supplicant interface state: associating -> 4way_handshake
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.3208] device (p2p-dev-wlan0): supplicant management interface state: associating -> 4way_handshake
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.3403] device (wlan0): supplicant interface state: 4way_handshake -> completed
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.3405] device (wlan0): Activation: (wifi) Stage 2 of 5 (Device Configure) successful. Connected to wireless network "thewildes-office"
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.3405] device (p2p-dev-wlan0): supplicant management interface state: 4way_handshake -> completed
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.3411] device (wlan0): state change: config -> ip-config (reason 'none', sys-iface-state: 'managed')
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.3437] dhcp4 (wlan0): activation: beginning transaction (timeout in 45 seconds)
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.3910] dhcp4 (wlan0): state changed new lease, address=192.168.1.159
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.3940] policy: set 'preconfigured' (wlan0) as default for IPv4 routing and DNS
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.4627] device (wlan0): state change: ip-config -> ip-check (reason 'none', sys-iface-state: 'managed')
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.4735] device (wlan0): state change: ip-check -> secondaries (reason 'none', sys-iface-state: 'managed')
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.4749] device (wlan0): state change: secondaries -> activated (reason 'none', sys-iface-state: 'managed')
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.4771] manager: NetworkManager state is now CONNECTED_SITE
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.4855] device (wlan0): Activation: successful, device activated.
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.4882] manager: NetworkManager state is now CONNECTED_GLOBAL
+Aug 31 14:39:25 motion NetworkManager[518]: <info>  [1756647565.4909] manager: startup complete
+Aug 31 14:39:27 motion NetworkManager[518]: <info>  [1756647567.1391] dhcp6 (wlan0): activation: beginning transaction (timeout in 45 seconds)
+Aug 31 14:39:27 motion NetworkManager[518]: <info>  [1756647567.1416] policy: set 'preconfigured' (wlan0) as default for IPv6 routing and DNS
+Aug 31 14:39:27 motion NetworkManager[518]: <info>  [1756647567.1673] dhcp6 (wlan0): state changed new lease, address=2a00:23c6:53f8:2501::806
+Aug 31 14:39:49 motion NetworkManager[518]: <info>  [1756647589.4746] agent-manager: agent[a8a5ed8665b933b0,:1.43/org.freedesktop.nm-applet/1000]: agent registered
+
+=== WiFi kernel messages (wlan0/brcm/cfg80211/mac80211) ===
+Aug 31 14:17:01 motion kernel: Kernel command line: coherent_pool=1M 8250.nr_uarts=0 snd_bcm2835.enable_headphones=0 cgroup_disable=memory snd_bcm2835.enable_hdmi=1 snd_bcm2835.enable_hdmi=0  smsc95xx.macaddr=<MAC> vc_mem.mem_base=0x1ec00000 vc_mem.mem_size=0x20000000  console=ttyS0,115200 console=tty1 root=PARTUUID=8ea3e6e5-02 rootfstype=ext4 fsck.repair=yes rootwait quiet splash plymouth.ignore-serial-consoles cfg80211.ieee80211_regdom=GB
+Aug 31 14:17:02 motion kernel: cfg80211: Loading compiled-in X.509 certificates for regulatory database
+Aug 31 14:17:03 motion kernel: Bluetooth: hci0: BCM43430A1 'brcm/BCM43430A1.raspberrypi,model-zero-2-w.hcd' Patch
+Aug 31 14:17:03 motion kernel: brcmfmac: F1 signature read @0x18000000=0x1541a9a6
+Aug 31 14:17:03 motion kernel: brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac43430-sdio for chip BCM43430/1
+Aug 31 14:17:03 motion kernel: usbcore: registered new interface driver brcmfmac
+Aug 31 14:17:03 motion kernel: brcmfmac: brcmf_c_process_txcap_blob: no txcap_blob available (err=-2)
+Aug 31 14:17:03 motion kernel: brcmfmac: brcmf_c_preinit_dcmds: Firmware: BCM43430/1 wl0: Jun 14 2023 07:27:45 version 7.45.96.s1 (gf031a129) FWID 01-70bd2af7 es7
+Aug 31 14:39:24 motion kernel: brcmfmac: brcmf_cfg80211_set_power_mgmt: power save enabled
+
+=== nmcli device status ===
+DEVICE         TYPE      STATE                   CONNECTION    
+wlan0          wifi      connected               preconfigured 
+lo             loopback  connected (externally)  lo            
+p2p-dev-wlan0  wifi-p2p  disconnected            --            
+
+=== nmcli device show wlan0 ===
+GENERAL.DEVICE:                         wlan0
+GENERAL.TYPE:                           wifi
+GENERAL.NM-TYPE:                        NMDeviceWifi
+GENERAL.DBUS-PATH:                      /org/freedesktop/NetworkManager/Devices/2
+GENERAL.VENDOR:                         Broadcom Corp.
+GENERAL.PRODUCT:                        BCM43438 combo WLAN and Bluetooth Low Energy (BLE)
+GENERAL.DRIVER:                         brcmfmac
+GENERAL.DRIVER-VERSION:                 7.45.96
+GENERAL.FIRMWARE-VERSION:               es7
+GENERAL.HWADDR:                         <MAC>
+GENERAL.MTU:                            1500
+GENERAL.STATE:                          100 (connected)
+GENERAL.REASON:                         0 (No reason given)
+GENERAL.IP4-CONNECTIVITY:               4 (full)
+GENERAL.IP6-CONNECTIVITY:               4 (full)
+GENERAL.UDI:                            /sys/devices/platform/soc/3f300000.mmcnr/mmc_host/mmc1/mmc1:0001/mmc1:0001:1/net/wlan0
+GENERAL.PATH:                           platform-3f300000.mmcnr
+GENERAL.IP-IFACE:                       wlan0
+GENERAL.IS-SOFTWARE:                    no
+GENERAL.NM-MANAGED:                     yes
+GENERAL.AUTOCONNECT:                    yes
+GENERAL.FIRMWARE-MISSING:               no
+GENERAL.NM-PLUGIN-MISSING:              no
+GENERAL.PHYS-PORT-ID:                   --
+GENERAL.CONNECTION:                     preconfigured
+GENERAL.CON-UUID:                       ccfe6510-a306-4100-876f-dec2af3b64c5
+GENERAL.CON-PATH:                       /org/freedesktop/NetworkManager/ActiveConnection/2
+GENERAL.METERED:                        no (guessed)
+IP4.ADDRESS[1]:                         192.168.1.159/24
+IP4.GATEWAY:                            192.168.1.254
+IP4.ROUTE[1]:                           dst = 192.168.1.0/24, nh = 0.0.0.0, mt = 600
+IP4.ROUTE[2]:                           dst = 0.0.0.0/0, nh = 192.168.1.254, mt = 600
+IP4.DNS[1]:                             192.168.1.254
+IP4.DOMAIN[1]:                          lan
+IP6.ADDRESS[1]:                         2a00:23c6:53f8:2501::806/128
+IP6.ADDRESS[2]:                         2a00:23c6:53f8:2501:ba48:74e5:165b:44b/64
+IP6.ADDRESS[3]:                         fe80::7672:14cf:4878:fad7/64
+IP6.GATEWAY:                            fe80::d21b:f4ff:fe04:8660
+IP6.ROUTE[1]:                           dst = fe80::/64, nh = ::, mt = 1024
+IP6.ROUTE[2]:                           dst = 2a00:23c6:53f8:2501::/64, nh = ::, mt = 600
+IP6.ROUTE[3]:                           dst = 2a00:23c6:53f8:2500::/56, nh = fe80::d21b:f4ff:fe04:8660, mt = 600
+IP6.ROUTE[4]:                           dst = ::/0, nh = fe80::d21b:f4ff:fe04:8660, mt = 600
+IP6.ROUTE[5]:                           dst = 2a00:23c6:53f8:2501::806/128, nh = ::, mt = 600
+WIFI-PROPERTIES.WEP:                    yes
+WIFI-PROPERTIES.WPA:                    yes
+WIFI-PROPERTIES.WPA2:                   yes
+WIFI-PROPERTIES.TKIP:                   yes
+WIFI-PROPERTIES.CCMP:                   yes
+WIFI-PROPERTIES.AP:                     yes
+WIFI-PROPERTIES.ADHOC:                  yes
+WIFI-PROPERTIES.2GHZ:                   yes
+WIFI-PROPERTIES.5GHZ:                   no
+WIFI-PROPERTIES.MESH:                   no
+WIFI-PROPERTIES.IBSS-RSN:               no
+
+=== Active connections ===
+NAME           UUID                                  TYPE      DEVICE 
+preconfigured  ccfe6510-a306-4100-876f-dec2af3b64c5  wifi      wlan0  
+lo             4f5195f3-63e7-4ea9-8ff9-fb3f84f9bf80  loopback  lo     
+
+=== rfkill ===
+0: hci0: Bluetooth
+	Soft blocked: no
+	Hard blocked: no
+1: phy0: Wireless LAN
+	Soft blocked: no
+	Hard blocked: no
+
+=== Regulatory domain ===
+global
+country US: DFS-FCC
+	(902 - 904 @ 2), (N/A, 30), (N/A)
+	(904 - 920 @ 16), (N/A, 30), (N/A)
+	(920 - 928 @ 8), (N/A, 30), (N/A)
+	(2400 - 2472 @ 40), (N/A, 30), (N/A)
+	(5150 - 5250 @ 80), (N/A, 23), (N/A), AUTO-BW
+	(5250 - 5350 @ 80), (N/A, 24), (0 ms), DFS, AUTO-BW
+	(5470 - 5730 @ 160), (N/A, 24), (0 ms), DFS
+	(5730 - 5850 @ 80), (N/A, 30), (N/A), AUTO-BW
+	(5850 - 5895 @ 40), (N/A, 27), (N/A), NO-OUTDOOR, AUTO-BW, PASSIVE-SCAN
+	(5925 - 7125 @ 320), (N/A, 12), (N/A), NO-OUTDOOR, PASSIVE-SCAN
+	(57240 - 71000 @ 2160), (N/A, 40), (N/A)
+
+phy#0
+country 99: DFS-UNSET
+	(2402 - 2482 @ 40), (6, 20), (N/A)
+	(2474 - 2494 @ 20), (6, 20), (N/A)
+	(5140 - 5360 @ 160), (6, 20), (N/A)
+	(5460 - 5860 @ 160), (6, 20), (N/A)
+

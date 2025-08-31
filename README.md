@@ -238,3 +238,13 @@ GitHub push: Permission denied (publickey)
 ## License
 
 MIT (or choose your license of preference).
+
+---
+
+## WiFi (fallback hotspot + scan/connect)
+
+- On startup, if no WiFi connection is detected within **30 seconds**, RevCam1 starts an **open hotspot** named **RevCam** (no password).
+- Manage WiFi at **/wifi**:
+  - **Start/Stop hotspot**
+  - **Scan** nearby networks
+  - **Connect** to a selected SSID (password prompt for secured APs)
